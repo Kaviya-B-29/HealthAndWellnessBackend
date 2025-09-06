@@ -1,12 +1,13 @@
 # Health & Wellness App - Backend
+=================================
 
 This repository contains the backend implementation of the Health & Wellness Tracking System.  
 It provides a secure RESTful API built with Node.js, Express.js, and MongoDB.  
 The backend handles authentication, data storage, and business logic for workouts, nutrition, mental health logs, and goals.
 
----
-
+------------------
 ## System Features
+------------------
 - User authentication and authorization (JWT-based)
 - CRUD operations for:
   - Workouts
@@ -34,7 +35,7 @@ HealthAppBackend/
 │ └── goalRoutes.js
 ├── middleware/ # Middleware for auth and error handling
 │ └── authMiddleware.js
-├── controllers/ # Business logic for each feature
+├── controllers/ # logic for each feature
 │ ├── authController.js
 │ ├── workoutController.js
 │ ├── foodController.js
@@ -44,4 +45,21 @@ HealthAppBackend/
 │ └── db.js
 ├── server.js # Entry point for Express server
 ├── package.json # Dependencies and scripts
-└── .env.example # Example environment configuration
+└── .env # environment configuration
+
+API Overview
+--------------
+
+POST /api/auth/register – Register a new user
+
+POST /api/auth/login – Login and receive token
+
+GET /api/auth/me – Get logged in user details
+
+GET/POST/DELETE /api/workouts – Manage workout logs
+
+GET/POST/DELETE /api/foods – Manage nutrition logs
+
+GET/POST/DELETE /api/mental-logs – Manage mental health logs
+
+GET/POST/DELETE /api/goals – Manage goals
