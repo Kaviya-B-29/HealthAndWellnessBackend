@@ -11,9 +11,32 @@ import userRoutes from "./routes/userRoutes.js"
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(morgan("dev"));
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const result = await mongoose.connection.db.admin().ping();
+    res.json({ status: "OK", ping: result });
+  } catch (err) {
+    res.status(500).json({ status: "FAIL", error: err.message });
+  }
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/workouts", workoutRoutes);
