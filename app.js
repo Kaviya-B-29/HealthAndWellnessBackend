@@ -29,14 +29,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(morgan("dev"));
-app.get("/api/test-db", async (req, res) => {
-  try {
-    const result = await mongoose.connection.db.admin().ping();
-    res.json({ status: "OK", ping: result });
-  } catch (err) {
-    res.status(500).json({ status: "FAIL", error: err.message });
-  }
-});
+
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/workouts", workoutRoutes);
@@ -47,6 +41,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/reminders", reminderRoutes);
 app.get("/", (req, res) => {
   res.send({ message: "Health & Wellness API is running..." });
+});
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API route works!" });
 });
 
 export default app;
