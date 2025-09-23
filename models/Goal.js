@@ -8,6 +8,8 @@ const goalSchema = new mongoose.Schema(
     targetCalories: { type: Number, default: 0 },
     targetWorkoutMinutes: { type: Number, default: 0 },
     completed: { type: Boolean, default: false },
+    manualCompleted: { type: Boolean, default: undefined }
+
   },
   { timestamps: true }
 );

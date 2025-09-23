@@ -68,23 +68,30 @@ export const getGoals = async (req, res) => {
         );
         const totalFoodCalories = foods.reduce((s, f) => s + (f.calories || 0), 0);
 
-        // progress depends on category
-        let completed = false;
-        if (goal.category === "Calories") {
-          completed = totalFoodCalories <= goal.targetCalories;
-        } else if (goal.category === "Workout") {
-          completed = totalWorkoutMinutes >= goal.targetWorkoutMinutes;
-        } else if (goal.category === "Balance") {
-          // balance means calories burned vs gained
-          const netCalories = totalWorkoutCalories - totalFoodCalories;
-          completed = netCalories >= goal.targetCalories;
-        }
+        // Weight Loss => focus on burned calories <= targetCalories and workout >= targetMinutes
+// Weight Gain => focus on consumed calories >= targetCalories and workout >= targetMinutes
+// General Fitness => mix of calories balance and workout
 
-        // update goal status if changed
-        if (goal.completed !== completed) {
-          goal.completed = completed;
-          await goal.save();
-        }
+let completed = false;
+
+if (goal.category === "Weight Loss") {
+  completed = totalFoodCalories <= goal.targetCalories && totalWorkoutMinutes >= goal.targetWorkoutMinutes;
+} else if (goal.category === "Weight Gain") {
+  completed = totalFoodCalories >= goal.targetCalories && totalWorkoutMinutes >= goal.targetWorkoutMinutes;
+} else if (goal.category === "General Fitness") {
+  const totalWorkoutCalories = workouts.reduce((s, w) => s + (w.caloriesBurned ?? w.calories ?? 0), 0);
+  completed =
+    totalWorkoutMinutes >= goal.targetWorkoutMinutes &&
+    totalWorkoutCalories - totalFoodCalories >= goal.targetCalories;
+}
+
+// Update DB if changed
+if (goal.completed !== completed) {
+  goal.completed = completed;
+  await goal.save();
+}
+
+        
 
         return {
           ...goal.toObject(),

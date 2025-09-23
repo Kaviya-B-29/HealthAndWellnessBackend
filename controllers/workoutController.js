@@ -1,5 +1,7 @@
 // controllers/workoutController.js
 import Workout from "../models/Workout.js";
+import mongoose from "mongoose";
+
 
 /**
  * Estimate calories server-side if not provided.
@@ -82,14 +84,21 @@ export const getWorkouts = async (req, res) => {
 
 export const deleteWorkout = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
+
+    // 🔍 validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid workout ID" });
+    }
+
     const doc = await Workout.findById(id);
     if (!doc) return res.status(404).json({ message: "Workout not found" });
-    // if user owns doc, check ownership (if req.user present)
+
     if (req.user && doc.user && String(doc.user) !== String(req.user._id)) {
       return res.status(403).json({ message: "Not allowed" });
     }
-    await doc.remove();
+
+    await doc.deleteOne();
     res.json({ message: "Deleted" });
   } catch (err) {
     console.error("deleteWorkout error:", err);

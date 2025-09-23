@@ -49,24 +49,15 @@ export const getReminders = async (req, res) => {
     }
 
     // --- Goals ---
-    const totalCalories = foodLogs.reduce((s, f) => s + (f.calories || 0), 0);
-    const totalWorkoutMinutes = workouts.reduce((s, w) => s + (w.duration || 0), 0);
+// --- Goals ---
+goals.forEach((goal) => {
+  const isCompleted = goal.completed || goal.manualCompleted; // consider manual completion too
+  if (!isCompleted) {
+    reminders.push(`${goal.type} Goal (${goal.category}) is not completed yet.`);
+  }
+});
 
-    goals.forEach((goal) => {
-      let completed = goal.completed;
 
-      if (goal.category.toLowerCase() === "food" && goal.targetCalories > 0) {
-        completed = totalCalories >= goal.targetCalories;
-      }
-
-      if (goal.category.toLowerCase() === "workout" && goal.targetWorkoutMinutes > 0) {
-        completed = totalWorkoutMinutes >= goal.targetWorkoutMinutes;
-      }
-
-      if (!completed) {
-        reminders.push(`${goal.type} Goal (${goal.category}) is not completed yet.`);
-      }
-    });
 
     const lastSeen = lastSeenReminders[userId] || [];
     const newReminders = reminders.filter((r) => !lastSeen.includes(r));
