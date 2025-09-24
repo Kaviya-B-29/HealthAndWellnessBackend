@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     age: { type: Number },
     height: { type: Number },
     weight: { type: Number },
-    preference: { type: String }, // weight_loss, muscle_gain, etc.
+    preference: { type: String }, 
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

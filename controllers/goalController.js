@@ -2,7 +2,6 @@ import Goal from "../models/Goal.js";
 import Workout from "../models/Workout.js";
 import Food from "../models/Food.js";
 
-// helper: get date range based on type
 function getDateRange(type) {
   const now = new Date();
   let start;
